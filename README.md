@@ -14,3 +14,7 @@ Done.
 # Format
 Multiple files will format using the ";" (semicolon).
 Example: C:/path/to/image/image01.png;C:/path/to/image/image02.png;C:/path/to/image/image03.png etc.
+
+**AFTER** you have selected files. **any changes to the OUTPUT field will change the actual output.**
+Changing the path will move the file to the given location.
+Changing the file name will convert the image and rename it.
