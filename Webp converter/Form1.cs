@@ -18,6 +18,7 @@ namespace Webp_converter
     {
         //TODO: USE MULTITHREAD "-mt" TAG!
         string binToolsVersion = "https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-0.4.1-rc1-windows-x64-no-wic.zip";
+        int maxProcesses = 10; //Max parallel processes when converting.
 
         public Form1()
         {
@@ -55,7 +56,7 @@ namespace Webp_converter
         {
 
         }
-        bool ready = false;
+
         private void ConvertButton_Click(object sender, EventArgs e)
         {
             if(CheckTools())
@@ -66,6 +67,8 @@ namespace Webp_converter
         {
             string[] inputArray = InputTextbox.Text.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries); //Remove empty entries using filter.
             string[] outputArray = convertTextbox.Text.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+            int currentProcessCount = 0;
 
             for (int i = 0; i < inputArray.Length; i++)
             {
@@ -82,8 +85,21 @@ namespace Webp_converter
                         Process dwebp = new Process();
                         dwebp.StartInfo.FileName = $"{Environment.CurrentDirectory}/bin/bin/dwebp.exe";
                         dwebp.StartInfo.Arguments = $"\"{inputArray[i]}\" {extraParameter} -o \"{outputArray[i]}\"";
+                        dwebp.StartInfo.WindowStyle = ProcessWindowStyle.Hidden; //Hide windows so you dont get console windows spam when converting 100+ files.
+                        dwebp.EnableRaisingEvents = true; //To enable .Exited call.
+                        dwebp.Exited += (s, e) => //Count when process is done and decrease process count.
+                        {
+                            currentProcessCount--;
+                        };
                         dwebp.Start();
-                        StatusStripLabel.Text = $"Converting {(100 / inputArray.Length) * (i + 1)}%"; // i + 1 because arrays start at 0...
+                        currentProcessCount++; //Add process because it just started another one.
+
+                        if (currentProcessCount >= maxProcesses) //When max processes reached. wait for processes to finish before starting more.
+                            dwebp.WaitForExit(); //Wait for process to finish before continueing.
+                            
+                        //Maybe add "Max Process count" so you can run 10 instances at the same time?
+                        float procDone = (float)(100 / (float)inputArray.Length) * (float)(i + 1); //Thats a lot of floats!.... yep.. the calculations doesn't work if its not float. the 100 / lenght returns 0 because it thinks its a INT...
+                        StatusStripLabel.Text = $"Converting {i+1}/{inputArray.Length} {(int)procDone}%"; // i + 1 because arrays start at 0... Also converting the float to int for readability.
                     }
                 }
             }
@@ -106,7 +122,6 @@ namespace Webp_converter
                 {
                     //Directory.CreateDirectory("bin");
                     StatusStripLabel.Text = "Downloading tools...";
-                    ready = false;
                     using (WebClient client = new WebClient())
                     {
                         client.DownloadProgressChanged += (s, e) => 
