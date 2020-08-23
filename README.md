@@ -10,3 +10,7 @@ Converts WebP file(s) to png, bmp, etc.
 Example: image.webp will convert to image.png.
 4. Press the "Convert" button. If Google's webp tools are not found it will ask if you want to download the tools.
 Done.
+
+# Format
+multible files will format using the ";" (semicolon).
+Example: C:/path/to/image/image01.png;C:/path/to/image/image02.png;C:/path/to/image/image03.png etc.
