@@ -3,7 +3,7 @@ Converts WebP file(s) to png, bmp, etc.
 
 ![WebP Converter](/README/Form01.png)
 
-##Usage:
+## Usage:
 1. Select output type. PNG is default.
 2. Select one or more files using the "Browse" button.
 3. If needed. Rename output files. If not changed, output files will have the same name but with differend extension.
