@@ -12,5 +12,5 @@ Example: image.webp will convert to image.png.
 Done.
 
 # Format
-multible files will format using the ";" (semicolon).
+Multiple files will format using the ";" (semicolon).
 Example: C:/path/to/image/image01.png;C:/path/to/image/image02.png;C:/path/to/image/image03.png etc.
